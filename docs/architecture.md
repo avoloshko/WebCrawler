@@ -1,4 +1,4 @@
-The primary goal of the application is to scan websites and retrieve the most important information from them. The application is easy-to-use and has just a few prerequisites. The core part can be utilized independently. It uses abstraction layers to separate code into parts and provide greater extensibility.
+The primary goal of the application is to scan websites and index the most important information. The application is easy-to-use and has just a few prerequisites. The core part can be utilized independently. It uses abstraction layers to separate code into parts and provide greater extensibility.
 
 The application holds an index in either memory or LevelDB local database. LevelDB is a fast and convenient embedded data storage. It can not be replicated and there is no MapReduce feature. Nevertheless, the core part allows to add more advanced database backends and use them together with other layers.
 
