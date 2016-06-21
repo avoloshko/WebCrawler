@@ -2,6 +2,8 @@ The primary goal of the application is to scan websites and retrieve the most im
 
 The application holds an index in either memory or LevelDB local database. LevelDB is a fast and convenient embedded data storage. It can not be replicated and there is no MapReduce feature. Nevertheless, the core part allows to add more advanced database backends and use them together with other layers.
 
+![architecture](diagram.png)
+
 The Web and CLI applications allow to scan websites and see the results interactively.
 
 ### Known issues / limitations
