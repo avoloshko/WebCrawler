@@ -1,0 +1,14 @@
+logging:
+  level: INFO
+  appenders:
+    - type: console
+      threshold: TRACE
+webCrawler:
+    store:
+      memory: false
+      levelDB:
+        database: webcrawler.db
+        cacheSize: 104857600
+    loader:
+        maxThreads: 10
+        resourceTimeout: 5000

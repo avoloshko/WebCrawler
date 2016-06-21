@@ -1,0 +1,158 @@
+<!-- A simple web page to crawl web resources -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+        .green {
+            color: green;
+        }
+        .red {
+            color: red;
+        }
+        table {
+            width:100%;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+        table tr:nth-child(even) {
+            background-color: #eee;
+        }
+        table tr:nth-child(odd) {
+           background-color:#fff;
+        }
+        </style>
+    </head>
+    <body>
+        <h2>WebCrawler</h2>
+        <input type="text" id="inputURI" size="40" value="http://kovka24.com.ua">
+        <button onclick="crawl()">Crawl</button>
+        <button onclick="cancel()">Cancel</button>
+        <br />
+        <br />
+        <div id="loadingProgress" style="text-align:right">0 / 0</div>
+        <table id="uriList">
+            <tr>
+                <th>Page</th>
+                <th>Title</th>
+                <th style="width:100px;">Size (B)</th>
+                <th style="width:100px;">Time (ms)</th>
+                <th>Content</th>
+            </tr>
+        </table>
+    </body>
+    <script type="text/javascript">
+        var socket;
+        function sendEvent(event) {
+            socket.send(JSON.stringify(event));
+        }
+
+        function receiveEvent(event) {
+            if (event.type == 'alert') {
+                alert(event.payload);
+            } else if (event.type == 'failed') {
+                appendErrorRow(createLink(event.payload), '<span class="red">FAILED</span>');
+            } else if (event.type == 'pageProcessed') {
+
+                var content = '';
+                content += '<b>Internal URIs:</b>' + '<br />';
+                event.payload.internalURIs.forEach(function(item) {
+                    content += createLink(item) + '<br />';
+                });
+                content += '<br />';
+
+                content += '<b>External URIs:</b>' + '<br />';
+                event.payload.externalURIs.forEach(function(item) {
+                    content += createLink(item) + '<br />';
+                });
+                content += '<br />';
+
+                content += '<b>Images:</b>' + '<br />';
+                event.payload.images.forEach(function(item) {
+                    content += createLink(item) + '<br />';
+                });
+
+                appendRow(event.payload.uri, event.payload.title,
+                    event.payload.pageSize, event.payload.notModified, event.payload.pageLoadTime,
+                    content);
+            } else if (event.type == 'completed') {
+                updateProgress(event.payload[0], event.payload[1]);
+            }
+        }
+
+        function crawl() {
+            var inputURI = document.getElementById('inputURI').value;
+            sendEvent({
+                type: 'crawl',
+                payload: inputURI
+            });
+        }
+
+        function updateProgress(completedCount, totalCount) {
+            document.getElementById('loadingProgress').textContent = completedCount + ' / ' + totalCount;
+        }
+
+        function cancel() {
+            sendEvent({
+                type: 'cancel'
+            });
+
+            var table = document.getElementById('uriList');
+            for(var i = table.rows.length - 1; i > 0; --i)
+            {
+                table.deleteRow(i);
+            }
+
+            updateProgress(0, 0);
+        }
+
+        function appendErrorRow(uri, content) {
+            var table = document.getElementById('uriList');
+
+            var tr = document.createElement('tr');
+            var td = tr.appendChild(document.createElement('td'));
+            td.innerHTML = uri;
+            td = tr.appendChild(document.createElement('td'));
+            td.innerHTML = content;
+
+            table.appendChild(tr);
+        }
+
+        function createLink(uri) {
+            return '<a href="' + uri + '" target="_blank">' + uri + '</a>';
+        }
+
+        function appendRow(uri, title, size, notModified, time, content) {
+            var table = document.getElementById('uriList');
+
+            var tr = document.createElement('tr');
+            var td = tr.appendChild(document.createElement('td'));
+            td.innerHTML = createLink(uri);
+            td = tr.appendChild(document.createElement('td'));
+            td.innerHTML = title;
+            td = tr.appendChild(document.createElement('td'));
+            td.innerHTML = size;
+            td = tr.appendChild(document.createElement('td'));
+            td.innerHTML = time;
+            td = tr.appendChild(document.createElement('td'));
+            td.innerHTML = (notModified ? '<span class="green">NOT MODIFIED</span><br /><br />' : '') + content;
+
+            table.appendChild(tr);
+        }
+
+        window.onload = function() {
+            socket = new WebSocket("ws://localhost:8080/webCrawler");
+            socket.onmessage = function(message) {
+                var event = JSON.parse(message.data);
+                receiveEvent(event);
+            };
+            socket.onopen = function() {
+            };
+        }
+    </script>
+</html>
