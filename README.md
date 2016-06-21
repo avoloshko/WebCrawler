@@ -22,7 +22,7 @@ The most important results of the build are
 ## Running
 
  * ```java -jar cli/target/cli-<version>.jar crawl cli/dist/configuration.yml --href https://google.com```
- * ```java -jar cli/target/web-<version>.jar server cli/dist/configuration.yml```
+ * ```java -jar web/target/web-<version>.jar server cli/dist/configuration.yml```
 
 By default the web application uses port 8080.
 
