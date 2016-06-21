@@ -1,12 +1,12 @@
 # WebCrawler
-WebCrawler is a simple Java based framework which scans websites concurrently and stores data into persistent storage.
+WebCrawler is a simple Java based framework which scans websites concurrently and stores indexed data into persistent storage.
 
 ## Building and running
 
 ### Prerequisites
 Version numbers below indicate the versions used.
 
- * Maven 3.3.3 (http://maven.apache.org)
+ * Maven 3.3.9 (http://maven.apache.org)
  * Java 1.8.0_73 (http://java.oracle.com)
 
 ### Building Steps
