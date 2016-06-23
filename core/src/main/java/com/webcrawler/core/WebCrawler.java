@@ -20,8 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class WebCrawler {
     private static final Logger logger = LoggerFactory.getLogger(WebCrawler.class);
 
-    private final Injector injector;
-
     private final ObservablePageLoader observablePageLoader;
 
     private IndexModifier indexWriter;
@@ -29,9 +27,11 @@ public class WebCrawler {
     public WebCrawler(Configuration configuration) {
         logger.info("Working dir: " + System.getProperty("user.dir"));
 
-        injector = Guice.createInjector(new InjectionModule(configuration));
+        Injector injector = Guice.createInjector(new InjectionModule(configuration));
 
         observablePageLoader = injector.getInstance(ObservablePageLoader.class);
+        indexWriter = injector.getInstance(IndexModifier.class);
+        indexWriter.init();
     }
 
     public WebCrawler crawl(URI url) {
@@ -69,13 +69,7 @@ public class WebCrawler {
     /**
      * Provides read access to indexed data
      */
-    synchronized public Index index() {
-
-        if (indexWriter == null) {
-            indexWriter = injector.getInstance(IndexModifier.class);
-            indexWriter.init();
-        }
-
+    public Index index() {
         return indexWriter;
     }
 }
