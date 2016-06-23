@@ -35,15 +35,15 @@ public class LevelDBStoreTest {
 
         String value = "v12345", key = "k12345";
 
-        assertNull(store.get(value.getBytes()));
+        assertNull(store.get(value));
 
-        store.put(key.getBytes(), value.getBytes());
+        store.put(key, value.getBytes());
 
-        assertArrayEquals(store.get(key.getBytes()), value.getBytes());
+        assertArrayEquals(store.get(key), value.getBytes());
 
-        store.remove(store.get(key.getBytes()));
+        store.remove(key);
 
-        assertNull(store.get(value.getBytes()));
+        assertNull(store.get(value));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class LevelDBStoreTest {
 
         assertTrue(store.isEmpty());
 
-        store.put(key.getBytes(), value.getBytes());
+        store.put(key, value.getBytes());
 
         assertFalse(store.isEmpty());
     }
@@ -61,14 +61,14 @@ public class LevelDBStoreTest {
     @Test
     public void testIterateKeys() throws IOException {
 
-        store.put("k12345".getBytes(), "v12345".getBytes());
-        store.put("k23456".getBytes(), "v23456".getBytes());
+        store.put("k12345", "v12345".getBytes());
+        store.put("k23456", "v23456".getBytes());
 
         final List<String> keys = new ArrayList<>();
-        store.iterate("k1".getBytes(), new KVStore.KeyProcessor() {
+        store.iterate("k1", new KVStore.KeyProcessor() {
             @Override
-            public boolean process(byte[] key) {
-                keys.add(new String(key));
+            public boolean process(String key) {
+                keys.add(key);
                 return false;
             }
         });
@@ -77,10 +77,10 @@ public class LevelDBStoreTest {
         assertEquals(keys.get(0), "k12345");
 
         keys.clear();
-        store.iterate("k".getBytes(), new KVStore.KeyProcessor() {
+        store.iterate("k", new KVStore.KeyProcessor() {
             @Override
-            public boolean process(byte[] key) {
-                keys.add(new String(key));
+            public boolean process(String key) {
+                keys.add(key);
                 return false;
             }
         });
@@ -93,15 +93,15 @@ public class LevelDBStoreTest {
     @Test
     public void testIterateKeysValues() throws IOException {
 
-        store.put("k12345".getBytes(), "v12345".getBytes());
-        store.put("k23456".getBytes(), "v23456".getBytes());
+        store.put("k12345", "v12345".getBytes());
+        store.put("k23456", "v23456".getBytes());
 
         final List<String> keys = new ArrayList<>();
         final List<String> values = new ArrayList<>();
-        store.iterate("k1".getBytes(), new KVStore.KeyValueProcessor() {
+        store.iterate("k1", new KVStore.KeyValueProcessor() {
             @Override
-            public boolean process(byte[] key, byte[] value) {
-                keys.add(new String(key));
+            public boolean process(String key, byte[] value) {
+                keys.add(key);
                 values.add(new String(value));
                 return false;
             }
@@ -113,10 +113,10 @@ public class LevelDBStoreTest {
 
         keys.clear();
         values.clear();
-        store.iterate("k".getBytes(), new KVStore.KeyValueProcessor() {
+        store.iterate("k", new KVStore.KeyValueProcessor() {
             @Override
-            public boolean process(byte[] key, byte[] value) {
-                keys.add(new String(key));
+            public boolean process(String key, byte[] value) {
+                keys.add(key);
                 values.add(new String(value));
                 return false;
             }

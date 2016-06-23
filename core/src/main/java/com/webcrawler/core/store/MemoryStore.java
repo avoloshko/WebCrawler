@@ -23,25 +23,24 @@ public class MemoryStore implements KVStore {
         return hashMap.isEmpty();
     }
 
-    public void put(byte[] key, byte[] data) {
-        hashMap.put(new String(key), data);
+    public void put(String key, byte[] data) {
+        hashMap.put(key, data);
     }
 
-    public void remove(byte[] key) {
-        hashMap.remove(new String(key));
+    public void remove(String key) {
+        hashMap.remove(key);
     }
 
-    public byte[] get(byte[] key) {
-        return hashMap.get(new String(key));
+    public byte[] get(String key) {
+        return hashMap.get(key);
     }
 
     @Override
-    public void iterate(byte[] keyPrefix, KeyValueProcessor kvProcessor) {
-        String sPref = new String(keyPrefix);
+    public void iterate(String keyPrefix, KeyValueProcessor kvProcessor) {
 
         for (Map.Entry<String, byte[]> entry : hashMap.entrySet()) {
-            if (entry.getKey().startsWith(sPref)) {
-                if (kvProcessor.process(entry.getKey().getBytes(), entry.getValue())) {
+            if (entry.getKey().startsWith(keyPrefix)) {
+                if (kvProcessor.process(entry.getKey(), entry.getValue())) {
                     break;
                 }
             }
@@ -49,12 +48,11 @@ public class MemoryStore implements KVStore {
     }
 
     @Override
-    public void iterate(byte[] keyPrefix, KeyProcessor keyProcessor) {
-        String sPref = new String(keyPrefix);
+    public void iterate(String keyPrefix, KeyProcessor keyProcessor) {
 
         for (String key : hashMap.keySet()) {
-            if (key.startsWith(sPref)) {
-                if (keyProcessor.process(key.getBytes())) {
+            if (key.startsWith(keyPrefix)) {
+                if (keyProcessor.process(key)) {
                     break;
                 }
             }

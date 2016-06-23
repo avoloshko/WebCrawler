@@ -107,10 +107,6 @@ public class MultiThreadPageLoader extends ObservablePageLoader {
                 }
 
                 logger.trace("Loading page: " + uri);
-                if (uri.toString().contains("/////")) {
-                    int a= 2;
-                    a = 10;
-                }
 
                 boolean notModified = false;
                 IndexPageInfo indexPageInfo = indexReader.getPageInfo(uri);

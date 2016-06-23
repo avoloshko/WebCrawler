@@ -6,11 +6,11 @@ package com.webcrawler.core.store;
 public interface KVStore {
 
     interface KeyValueProcessor {
-        boolean process(byte[] key, byte[] data);
+        boolean process(String key, byte[] data);
     }
 
     interface KeyProcessor {
-        boolean process(byte[] key);
+        boolean process(String key);
     }
 
     void open();
@@ -19,13 +19,13 @@ public interface KVStore {
 
     boolean isEmpty();
 
-    void put(byte[] key, byte[] data);
+    void put(String key, byte[] data);
 
-    void remove(byte[] key);
+    void remove(String key);
 
-    byte[] get(byte[] key);
+    byte[] get(String key);
 
-    void iterate(byte[] keyPrefix, KeyValueProcessor kvProcessor);
+    void iterate(String keyPrefix, KeyValueProcessor kvProcessor);
 
-    void iterate(byte[] keyPrefix, KeyProcessor keyProcessor);
+    void iterate(String keyPrefix, KeyProcessor keyProcessor);
 }

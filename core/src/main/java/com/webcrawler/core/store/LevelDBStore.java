@@ -71,22 +71,24 @@ public class LevelDBStore implements KVStore {
     }
 
     @Override
-    public void put(byte[] key, byte[] data) {
-        db.put(key, data);
+    public void put(String key, byte[] data) {
+        db.put(key.getBytes(), data);
     }
 
     @Override
-    public void remove(byte[] key) {
-        db.delete(key);
+    public void remove(String key) {
+        db.delete(key.getBytes());
     }
 
     @Override
-    public byte[] get(byte[] key) {
-        return db.get(key);
+    public byte[] get(String key) {
+        return db.get(key.getBytes());
     }
 
     @Override
-    public void iterate(byte[] keyPrefix, KeyValueProcessor kvProcessor) {
+    public void iterate(String keyPrefix, KeyValueProcessor kvProcessor) {
+
+        byte[] bKey = keyPrefix.getBytes();
 
         try (DBIterator dbIterator = db.iterator()) {
             for (dbIterator.seekToFirst(); dbIterator.hasNext(); dbIterator.next()) {
@@ -94,9 +96,9 @@ public class LevelDBStore implements KVStore {
                 byte[] key = entry.getKey();
 
                 boolean found = true;
-                for (int i = 0; i < keyPrefix.length; ++i) {
+                for (int i = 0; i < bKey.length; ++i) {
                     if (i == key.length ||
-                            key[i] != keyPrefix[i]) {
+                            key[i] != bKey[i]) {
                         found = false;
                         break;
                     }
@@ -105,7 +107,7 @@ public class LevelDBStore implements KVStore {
                     continue;
                 }
 
-                if (kvProcessor.process(key, entry.getValue())) {
+                if (kvProcessor.process(new String(key), entry.getValue())) {
                     break;
                 }
             }
@@ -114,16 +116,19 @@ public class LevelDBStore implements KVStore {
     }
 
     @Override
-    public void iterate(byte[] keyPrefix, KeyProcessor keyProcessor) {
+    public void iterate(String keyPrefix, KeyProcessor keyProcessor) {
+
+        byte[] bKey = keyPrefix.getBytes();
+
         try (DBIterator dbIterator = db.iterator()) {
             for (dbIterator.seekToFirst(); dbIterator.hasNext(); dbIterator.next()) {
                 Map.Entry<byte[], byte[]> entry = dbIterator.peekNext();
                 byte[] key = entry.getKey();
 
                 boolean found = true;
-                for (int i = 0; i < keyPrefix.length; ++i) {
+                for (int i = 0; i < bKey.length; ++i) {
                     if (i == key.length ||
-                            key[i] != keyPrefix[i]) {
+                            key[i] != bKey[i]) {
                         found = false;
                         break;
                     }
@@ -132,7 +137,7 @@ public class LevelDBStore implements KVStore {
                     continue;
                 }
 
-                if (keyProcessor.process(key)) {
+                if (keyProcessor.process(new String(key))) {
                     break;
                 }
             }

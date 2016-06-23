@@ -38,6 +38,9 @@ public abstract class ObservablePageLoader implements WebCrawlerObservable, Page
 
     @Override
     public void addObserver(CompleteObserver observer) {
+        if (observer == null) {
+            throw new NullPointerException();
+        }
         completeObservers.add(observer);
     }
 
@@ -48,6 +51,9 @@ public abstract class ObservablePageLoader implements WebCrawlerObservable, Page
 
     @Override
     public void addObserver(FailureObserver observer) {
+        if (observer == null) {
+            throw new NullPointerException();
+        }
         failureObservers.add(observer);
     }
 
@@ -58,6 +64,9 @@ public abstract class ObservablePageLoader implements WebCrawlerObservable, Page
 
     @Override
     public void addObserver(ProgressObserver observer) {
+        if (observer == null) {
+            throw new NullPointerException();
+        }
         progressObservers.add(observer);
     }
 

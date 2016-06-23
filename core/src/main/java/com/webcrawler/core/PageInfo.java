@@ -27,6 +27,9 @@ public class PageInfo {
     }
 
     public void setImages(Collection<URI> images) {
+        if (images == null) {
+            throw new NullPointerException();
+        }
         this.images = images;
     }
 
@@ -35,6 +38,9 @@ public class PageInfo {
     }
 
     public void setInternalURIs(Collection<URI> internalURIs) {
+        if (internalURIs == null) {
+            throw new NullPointerException();
+        }
         this.internalURIs = internalURIs;
     }
 
@@ -43,6 +49,9 @@ public class PageInfo {
     }
 
     public void setExternalURIs(Collection<URI> externalURIs) {
+        if (externalURIs == null) {
+            throw new NullPointerException();
+        }
         this.externalURIs = externalURIs;
     }
 

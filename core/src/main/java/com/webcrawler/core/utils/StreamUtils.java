@@ -14,9 +14,15 @@ public class StreamUtils {
         byte[] buffer = new byte[length];
         int offset = 0;
         while (true) {
-            int r = inputStream.read(buffer, offset, length - offset);
-            if (r <= 0) break;
-            offset += r;
+            int remained = length - offset;
+            if (remained == 0) {
+                break;
+            }
+
+            int read = inputStream.read(buffer, offset, remained);
+            if (read <= 0) break;
+
+            offset += read;
         }
 
         return buffer;

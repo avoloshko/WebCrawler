@@ -98,7 +98,7 @@ public class Configuration {
         this.loader = loader;
     }
 
-    public Configuration() {
+    private Configuration() {
     }
 
     public Store getStore() {

@@ -35,23 +35,23 @@ public class IndexImpl implements IndexModifier, Index {
 
     @Override
     public void updatePageInfo(URI uri, IndexPageInfo page) {
-        byte[] bytes = new byte[0];
+        byte[] bytes;
         try {
             bytes = objectMapper.writeValueAsBytes(page);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new IllegalStateException(e);
         }
 
-        kvStore.put(uri.toString().getBytes(), bytes);
+        kvStore.put(uri.toString(), bytes);
     }
 
     @Override
     public Collection<URI> getSiteURIs(URI uri) {
         final List<URI> urls = new ArrayList<>();
-        kvStore.iterate(uri.toString().getBytes(), new KVStore.KeyProcessor() {
+        kvStore.iterate(uri.toString(), new KVStore.KeyProcessor() {
             @Override
-            public boolean process(byte[] key) {
-                urls.add(URI.create(new String(key)));
+            public boolean process(String key) {
+                urls.add(URI.create(key));
                 return false;
             }
         });
@@ -60,7 +60,7 @@ public class IndexImpl implements IndexModifier, Index {
 
     @Override
     public IndexPageInfo getPageInfo(URI uri) {
-        byte[] bytes = kvStore.get(uri.toString().getBytes());
+        byte[] bytes = kvStore.get(uri.toString());
         if (bytes == null) {
             return null;
         }

@@ -72,14 +72,14 @@ public class IndexTest {
             }
         }).when(kvStore).close();
 
-        when(kvStore.get(indexPageKey.toString().getBytes())).thenReturn(objectMapper.writeValueAsBytes(indexPageInfo));
+        when(kvStore.get(indexPageKey.toString())).thenReturn(objectMapper.writeValueAsBytes(indexPageInfo));
 
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock var1) throws Throwable {
                 kvStoreUpdated = true;
                 return null;
             }
-        }).when(kvStore).put(indexPageKey.toString().getBytes(), objectMapper.writeValueAsBytes(indexPageInfo));
+        }).when(kvStore).put(indexPageKey.toString(), objectMapper.writeValueAsBytes(indexPageInfo));
     }
 
     @Test
